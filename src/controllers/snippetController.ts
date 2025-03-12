@@ -78,9 +78,20 @@ export const getSnippets = async (req: Request, res: Response) => {
       Snippet.countDocuments(query),
     ]);
 
+    const decodedSnippets = snippets.map((snippet) => ({
+      ...snippet,
+      code: snippet.code
+        ? Buffer.from(snippet.code, "base64").toString("utf-8")
+        : "",
+      history: snippet.history?.map((h) => ({
+        ...h,
+        code: h.code ? Buffer.from(h.code, "base64").toString("utf-8") : "",
+      })),
+    }));
+
     res.status(200).json({
       success: true,
-      data: snippets,
+      data: decodedSnippets,
       pagination: {
         page: pageNum,
         limit: limitNum,
