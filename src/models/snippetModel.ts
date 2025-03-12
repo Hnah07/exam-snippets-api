@@ -23,13 +23,6 @@ const snippetSchema = new mongoose.Schema(
     expiresIn: {
       type: Number,
       required: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      expires: function() {
-        return this.expiresIn;
-      }
     }
   },
   {
