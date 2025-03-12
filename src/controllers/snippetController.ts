@@ -133,3 +133,41 @@ export const getSnippetById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const updateSnippet = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { title, code, language, tags, expiresIn } = req.body;
+
+    const snippet = await Snippet.findByIdAndUpdate(
+      id,
+      {
+        title,
+        code,
+        language,
+        tags,
+        expiresIn,
+      },
+      { new: true }
+    );
+
+    if (!snippet) {
+      return res.status(404).json({
+        success: false,
+        message: "Snippet not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: snippet,
+    });
+  } catch (error) {
+    console.error("Error updating snippet:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating snippet",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};
