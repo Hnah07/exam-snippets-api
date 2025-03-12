@@ -197,11 +197,17 @@ export const getDashboard = async (req: Request, res: Response) => {
     if (language) query.language = language;
     if (tag) query.tags = tag;
 
-    const snippets = await Snippet.find(query).sort({ createdAt: -1 });
-    const allSnippets = await Snippet.find({});
+    const snippets = await Snippet.find(query).sort({ createdAt: -1 }).lean();
+    const allSnippets = await Snippet.find({}).lean();
+
+    // Ensure code is properly decoded for display
+    const processedSnippets = snippets.map((snippet) => ({
+      ...snippet,
+      code: Buffer.from(snippet.code, "base64").toString("utf-8"),
+    }));
 
     res.render("dashboard", {
-      snippets,
+      snippets: processedSnippets,
       selectedLanguage: language?.toString() || "",
       selectedTag: tag?.toString() || "",
     });
