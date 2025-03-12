@@ -171,3 +171,22 @@ export const updateSnippet = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const deleteSnippet = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    await Snippet.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Snippet deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting snippet:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error deleting snippet",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};
