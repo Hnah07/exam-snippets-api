@@ -1,4 +1,3 @@
-import { ParsedQs } from "qs";
 import { FilterQuery, SortOrder } from "mongoose";
 import { Snippet } from "../models/snippetModel";
 
@@ -11,8 +10,8 @@ interface SnippetQuery {
 }
 
 export const buildSnippetQuery = (
-  language?: string | ParsedQs | string[] | ParsedQs[],
-  tags?: string | ParsedQs | string[] | ParsedQs[]
+  language?: string | string[],
+  tags?: string | string[]
 ): FilterQuery<SnippetDocument> => {
   const query: SnippetQuery = {};
 
@@ -35,8 +34,8 @@ export const buildSnippetQuery = (
 };
 
 export const calculatePagination = (
-  page: string | ParsedQs | string[] | ParsedQs[] = "1",
-  limit: string | ParsedQs | string[] | ParsedQs[] = "10"
+  page: string | string[] = "1",
+  limit: string | string[] = "10"
 ) => {
   const pageNum = parseInt(typeof page === "string" ? page : "1");
   const limitNum = parseInt(typeof limit === "string" ? limit : "10");
@@ -50,8 +49,8 @@ export const calculatePagination = (
 };
 
 export const buildSortObject = (
-  sort: string | ParsedQs | string[] | ParsedQs[] = "createdAt",
-  order: string | ParsedQs | string[] | ParsedQs[] = "desc"
+  sort: string | string[] = "createdAt",
+  order: string | string[] = "desc"
 ): { [key: string]: SortOrder } => {
   const sortOrder: SortOrder = order === "desc" ? -1 : 1;
   return { [typeof sort === "string" ? sort : "createdAt"]: sortOrder };
