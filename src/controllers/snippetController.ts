@@ -188,3 +188,29 @@ export const deleteSnippet = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getDashboard = async (req: Request, res: Response) => {
+  try {
+    const { language, tag } = req.query;
+
+    const query: any = {};
+    if (language) query.language = language;
+    if (tag) query.tags = tag;
+
+    const snippets = await Snippet.find(query).sort({ createdAt: -1 });
+    const allSnippets = await Snippet.find({});
+
+    res.render("dashboard", {
+      snippets,
+      selectedLanguage: language?.toString() || "",
+      selectedTag: tag?.toString() || "",
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching dashboard",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};

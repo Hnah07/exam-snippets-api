@@ -10,12 +10,12 @@ const snippetSchema = new mongoose.Schema(
     code: {
       type: String,
       required: true,
-      get: function(code: string) {
-        return Buffer.from(code, 'base64').toString('utf-8');
+      get: function (code: string) {
+        return Buffer.from(code, "base64").toString("utf-8");
       },
-      set: function(code: string) {
-        return Buffer.from(code).toString('base64');
-      }
+      set: function (code: string) {
+        return Buffer.from(code).toString("base64");
+      },
     },
     language: {
       type: String,
@@ -30,12 +30,12 @@ const snippetSchema = new mongoose.Schema(
     expiresIn: {
       type: Number,
       required: false,
-    }
+    },
   },
   {
     timestamps: true,
-    toJSON: { getters: true }
+    toJSON: { getters: true },
   }
 );
 
-export const Snippet = mongoose.model("Snippet", snippetSchema); 
+export const Snippet = mongoose.model("Snippet", snippetSchema);
