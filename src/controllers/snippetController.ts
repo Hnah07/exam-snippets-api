@@ -137,6 +137,30 @@ export const updateSnippet = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { title, code, language, tags, expiresIn } = req.body;
 
+    const currentSnippet = await Snippet.findById(id);
+
+    if (!currentSnippet) {
+      return res.status(404).json({
+        success: false,
+        message: "Snippet not found",
+      });
+    }
+
+    const currentVersion =
+      currentSnippet.history?.length > 0
+        ? Math.max(...currentSnippet.history.map((h) => h.version))
+        : 0;
+    const newVersion = currentVersion + 1;
+
+    const newHistoryEntry = {
+      title,
+      code,
+      language,
+      tags,
+      version: newVersion,
+      createdAt: new Date(),
+    };
+
     const snippet = await Snippet.findByIdAndUpdate(
       id,
       {
@@ -145,6 +169,7 @@ export const updateSnippet = async (req: Request, res: Response) => {
         language,
         tags,
         expiresIn,
+        $push: { history: newHistoryEntry },
       },
       { new: true }
     );

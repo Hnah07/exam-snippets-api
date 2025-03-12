@@ -31,6 +31,22 @@ const snippetSchema = new mongoose.Schema(
       type: Number,
       required: false,
     },
+    history: [
+      {
+        title: String,
+        code: String,
+        language: String,
+        tags: [String],
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        version: {
+          type: Number,
+          default: 1,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
