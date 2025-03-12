@@ -6,8 +6,12 @@ import {
   buildSortObject,
   isExpired,
 } from "../utils/helpers";
+import { CreateSnippetRequest } from "../types/snippet";
 
-export const createSnippet = async (req: Request, res: Response) => {
+export const createSnippet = async (
+  req: CreateSnippetRequest,
+  res: Response
+) => {
   try {
     const { title, code, language, tags } = req.body;
 
@@ -60,25 +64,19 @@ export const getSnippets = async (req: Request, res: Response) => {
       limit = "10",
       sort = "createdAt",
       order = "desc",
-    } = req.query as {
-      language?: string;
-      tags?: string;
-      page?: string;
-      limit?: string;
-      sort?: string;
-      order?: string;
-    };
+    } = req.query;
 
-    const query = buildSnippetQuery(language, tags);
-    const { pageNum, limitNum, skip } = calculatePagination(page, limit);
-    const sortOptions = buildSortObject(sort, order);
+    const query = buildSnippetQuery(language?.toString(), tags?.toString());
+    const { pageNum, limitNum, skip } = calculatePagination(
+      page?.toString(),
+      limit?.toString()
+    );
+    const sortOptions = buildSortObject(sort?.toString(), order?.toString());
 
-    const snippets = await Snippet.find(query)
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(limitNum);
-
-    const total = await Snippet.countDocuments(query);
+    const [snippets, total] = await Promise.all([
+      Snippet.find(query).sort(sortOptions).skip(skip).limit(limitNum),
+      Snippet.countDocuments(query),
+    ]);
 
     res.status(200).json({
       success: true,
