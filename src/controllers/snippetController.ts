@@ -85,7 +85,11 @@ export const getSnippets = async (req: Request, res: Response) => {
       query.tags = { $in: tagArray };
     }
 
-    query.expiresIn = { $exists: false };
+    const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+    query.$or = [
+      { expiresIn: { $exists: false } },
+      { expiresIn: { $gt: currentTimeInSeconds } }
+    ];
 
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
