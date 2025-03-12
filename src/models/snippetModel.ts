@@ -10,6 +10,12 @@ const snippetSchema = new mongoose.Schema(
     code: {
       type: String,
       required: true,
+      get: function(code: string) {
+        return Buffer.from(code, 'base64').toString('utf-8');
+      },
+      set: function(code: string) {
+        return Buffer.from(code).toString('base64');
+      }
     },
     language: {
       type: String,
@@ -22,11 +28,12 @@ const snippetSchema = new mongoose.Schema(
     },
     expiresIn: {
       type: Number,
-      required: true,
+      required: false,
     }
   },
   {
     timestamps: true,
+    toJSON: { getters: true }
   }
 );
 
