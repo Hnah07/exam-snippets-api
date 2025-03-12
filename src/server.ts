@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("src/public"));
 
 // Routes
-app.use("/snippets", snippetRoutes);
+app.use("/api/snippets", snippetRoutes);
 app.all("*", notFound);
 
 // Database connection

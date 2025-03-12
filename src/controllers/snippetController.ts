@@ -74,7 +74,7 @@ export const getSnippets = async (req: Request, res: Response) => {
     const sortOptions = buildSortObject(sort?.toString(), order?.toString());
 
     const [snippets, total] = await Promise.all([
-      Snippet.find(query).sort(sortOptions).skip(skip).limit(limitNum),
+      Snippet.find(query).sort(sortOptions).skip(skip).limit(limitNum).lean(),
       Snippet.countDocuments(query),
     ]);
 
@@ -198,16 +198,9 @@ export const getDashboard = async (req: Request, res: Response) => {
     if (tag) query.tags = tag;
 
     const snippets = await Snippet.find(query).sort({ createdAt: -1 }).lean();
-    const allSnippets = await Snippet.find({}).lean();
-
-    // Ensure code is properly decoded for display
-    const processedSnippets = snippets.map((snippet) => ({
-      ...snippet,
-      code: Buffer.from(snippet.code, "base64").toString("utf-8"),
-    }));
 
     res.render("dashboard", {
-      snippets: processedSnippets,
+      snippets,
       selectedLanguage: language?.toString() || "",
       selectedTag: tag?.toString() || "",
     });
