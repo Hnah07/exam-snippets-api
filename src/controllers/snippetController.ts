@@ -46,7 +46,6 @@ export const createSnippet = async (
       data: snippet,
     });
   } catch (error) {
-    console.error("Error creating snippet:", error);
     res.status(500).json({
       success: false,
       message: "Error creating snippet",
@@ -78,20 +77,9 @@ export const getSnippets = async (req: Request, res: Response) => {
       Snippet.countDocuments(query),
     ]);
 
-    const decodedSnippets = snippets.map((snippet) => ({
-      ...snippet,
-      code: snippet.code
-        ? Buffer.from(snippet.code, "base64").toString("utf-8")
-        : "",
-      history: snippet.history?.map((h) => ({
-        ...h,
-        code: h.code ? Buffer.from(h.code, "base64").toString("utf-8") : "",
-      })),
-    }));
-
     res.status(200).json({
       success: true,
-      data: decodedSnippets,
+      data: snippets,
       pagination: {
         page: pageNum,
         limit: limitNum,
@@ -100,7 +88,6 @@ export const getSnippets = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching snippets:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching snippets",
@@ -134,7 +121,6 @@ export const getSnippetById = async (req: Request, res: Response) => {
       data: snippet,
     });
   } catch (error) {
-    console.error("Error fetching snippet:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching snippet",
@@ -197,7 +183,6 @@ export const updateSnippet = async (req: Request, res: Response) => {
       data: snippet,
     });
   } catch (error) {
-    console.error("Error updating snippet:", error);
     res.status(500).json({
       success: false,
       message: "Error updating snippet",
@@ -216,7 +201,6 @@ export const deleteSnippet = async (req: Request, res: Response) => {
       message: "Snippet deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting snippet:", error);
     res.status(500).json({
       success: false,
       message: "Error deleting snippet",
@@ -241,7 +225,6 @@ export const getDashboard = async (req: Request, res: Response) => {
       selectedTag: tag?.toString() || "",
     });
   } catch (error) {
-    console.error("Error fetching dashboard:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching dashboard",
